@@ -27,20 +27,6 @@ const NoteListScreen = ({navigation}) => {
 
   const { state, getNotes } = useContext(NoteContext);
 
-  //   const data = [
-  //     {
-  //       _id: "5e9db24084e8a02760befb52",
-  //       content: "new note motherfuckers",
-  //       title: "new note",
-  //     },
-  //     {
-  //       _id: "5e9db28d84e8a02760befb53",
-  //       content: "secon note motherfuckers",
-  //       date: "2020-04-20T14:32:45.971Z",
-  //       title: "secon note",
-  //     },
-  //   ];
-
   React.useEffect(() => {
     console.log(state);
   }, [state]);
@@ -55,6 +41,8 @@ const NoteListScreen = ({navigation}) => {
       <View
         style={[
           {
+            backgroundColor: "#FAFBFD",
+
             paddingTop: 40,
             paddingHorizontal: 10,
             flex:1,
@@ -62,7 +50,7 @@ const NoteListScreen = ({navigation}) => {
           },
         ]}
       >
-        <Text style={[styles.text, { textAlign: "center" }]}>notes</Text>
+        <Text style={[styles.text, {color:'#7041EE',paddingLeft:14}]}>notes</Text>
         <View style={{flex:1}}>
           <FlatList
             style={{}}
