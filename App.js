@@ -6,7 +6,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   Provider as AuthProvider,
   Context as AuthContext,
-} from "./Context/AuthContext.js";
+} from "./Context/AuthContext";
+import {
+  Provider as NoteProvider,
+} from "./Context/NoteContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 //screens
@@ -40,7 +43,6 @@ function App() {
     getToken,
   } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(true);
-
   React.useEffect(() => {
     //AsyncStorage.removeItem('token')
 
@@ -116,8 +118,10 @@ function App() {
 
 export default () => {
   return (
+    <NoteProvider>
     <AuthProvider>
       <App />
     </AuthProvider>
+    </NoteProvider>
   );
 };
