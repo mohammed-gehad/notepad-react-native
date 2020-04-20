@@ -1,10 +1,12 @@
-import React from "react";
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
+import React,{useState , useContext} from "react";
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity ,AsyncStorage } from "react-native";
 import { Button, Input, Divider } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
-import instance from '../api/noteApi'
-
+import {Context as AuthContext} from '../Context/AuthContext'
 const SigninScreen = ({ navigation }) => {
+    const {state , signin} = useContext(AuthContext)
+    const [email , setEmail] = useState('Pu2k@hotmail.com')
+    const [password , setPassword] = useState('Msamsamsa3')
     let [fontsLoaded] = useFonts({
         CircularStdBlack: require("../assets/Fonts/CircularStd-Black.ttf"),
         CircularStdBold: require("../assets/Fonts/CircularStd-Bold.ttf"),
@@ -25,6 +27,8 @@ const SigninScreen = ({ navigation }) => {
                     containerStyle={styles.input}
                     inputContainerStyle={styles.inputContainerStyle}
                     inputStyle={styles.inputStyle}
+                    value={email}
+                    onChangeText={setEmail}
                 />
                 <Divider style={styles.divider} />
                 <Input
@@ -32,6 +36,8 @@ const SigninScreen = ({ navigation }) => {
                     containerStyle={styles.input}
                     inputContainerStyle={styles.inputContainerStyle}
                     inputStyle={styles.inputStyle}
+                    value={password}
+                    onChangeText={setPassword}
                 />
                 <Divider style={styles.divider} />
 
@@ -41,10 +47,8 @@ const SigninScreen = ({ navigation }) => {
                     type="solid"
                     buttonStyle={styles.button}
                     titleStyle={styles.buttonTitleStyle}
-                    onPress={() => {
-                        instance.get('/user')
-                            .then(console.log)
-                            .catch(console.log)
+                    onPress={ ()=>{
+                        signin(email,password)
                     }}
                 />
                 <Divider style={styles.divider} />
