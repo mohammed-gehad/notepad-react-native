@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import { AsyncStorage } from "react-native";
 import authAPI from "../api/noteApi";
+import { color } from "react-native-reanimated";
 const _ = require("lodash");
 
 export const Context = React.createContext();
@@ -29,6 +30,7 @@ export const Provider = ({ children }) => {
       headers: { token },
       data,
     } = await authAPI.post("/user/login", { email, password });
+
     if (token) {
       await AsyncStorage.setItem("token", token);
       data.token = token;
@@ -36,6 +38,9 @@ export const Provider = ({ children }) => {
         type: "signin",
         payload: _.pick(data, ["email", "username", "note", "token"]),
       });
+    }
+    else{
+        return new Promise.reject(data)
     }
   };
 
@@ -52,6 +57,9 @@ export const Provider = ({ children }) => {
         payload: _.pick(data, ["email", "username", "note", "token"]),
       });
     }
+    else{
+        return new Promise.reject(data)
+    }
   };
 
   const getUserInfo = async () => {
@@ -59,7 +67,7 @@ export const Provider = ({ children }) => {
       const {
         headers: { token },
         data,
-      } = await authAPI.post("/user/me");
+      } = await authAPI.get("/user/me");
       if (token) {
         data.token = token;
         dispatch({

@@ -3,10 +3,14 @@ import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity ,AsyncStora
 import { Button, Input, Divider } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
 import {Context as AuthContext} from '../Context/AuthContext'
+import styles from '../assets/style'
+
 const SigninScreen = ({ navigation }) => {
     const {state , signin} = useContext(AuthContext)
     const [email , setEmail] = useState('Pu2k@hotmail.com')
     const [password , setPassword] = useState('Msamsamsa3')
+    const [errMessage , setErrMessage] = useState(null)
+
     let [fontsLoaded] = useFonts({
         CircularStdBlack: require("../assets/Fonts/CircularStd-Black.ttf"),
         CircularStdBold: require("../assets/Fonts/CircularStd-Bold.ttf"),
@@ -14,6 +18,15 @@ const SigninScreen = ({ navigation }) => {
         CircularStd: require("../assets/Fonts/CircularStd.ttf"),
     });
 
+    //event clears error message when navigate to another screen
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+          setErrMessage(null)
+        });
+    
+        return unsubscribe;
+      }, [navigation]);
+  
     if (!fontsLoaded) {
         return <ActivityIndicator size="large" color="#7041EE" />;
     } else {
@@ -48,7 +61,7 @@ const SigninScreen = ({ navigation }) => {
                     buttonStyle={styles.button}
                     titleStyle={styles.buttonTitleStyle}
                     onPress={ ()=>{
-                        signin(email,password)
+                        signin(email,password).catch(e=>setErrMessage(e))
                     }}
                 />
                 <Divider style={styles.divider} />
@@ -58,63 +71,14 @@ const SigninScreen = ({ navigation }) => {
                     <Text style={styles.subText}>New around here?  <Text style={{ color: '#7041EE' }}>create an account</Text></Text>
                 </TouchableOpacity>
 
+                {errMessage ? <Text style={styles.errMessage} >{errMessage}</Text> : null}
+
             </View>
         );
     }
 };
 
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#FAFBFD",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    button: {
-        borderRadius: 24,
-        backgroundColor: "#7041EE",
+// const styles = StyleSheet.create({
 
-        width: 305,
-        height: 58,
-
-    },
-    text: {
-        fontFamily: "CircularStdBlack",
-        color: "#2C2929",
-        fontSize: 36,
-    },
-    subText: {
-        fontFamily: "CircularStdBlack",
-        color: "#2C2929",
-        fontSize: 15,
-    },
-    input: {
-        width: 305,
-        height: 58,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 24,
-    },
-    inputContainerStyle: {
-        borderBottomWidth: 0,
-        alignItems: "center",
-        alignContent: "center",
-        flex: 1,
-    },
-    inputStyle: {
-        color: "#2C2929",
-        fontFamily: "CircularStd",
-        fontSize: 20,
-    },
-    divider: {
-        height: 10,
-        backgroundColor: "transparent",
-    },
-    buttonTitleStyle: {
-        color: "#FFFFFF",
-        fontFamily: "CircularStd",
-        fontSize: 20,
-
-    },
-
-});
+// });
 export default SigninScreen;

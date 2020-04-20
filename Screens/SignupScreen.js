@@ -3,12 +3,25 @@ import { View, Text, StyleSheet, ActivityIndicator,TouchableOpacity } from "reac
 import { Button, Input, Divider } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
 import {Context as AuthContext} from '../Context/AuthContext'
+import styles from '../assets/style'
+
 
 const SigninScreen = ({navigation}) => {
     const {state , signup }= useContext(AuthContext)
     const [email , setEmail] = useState('')
     const [password , setPassword] = useState('')
     const [username , setUsername] = useState('')
+    const [errMessage , setErrMessage] = useState(null)
+
+        //event clears error message when navigate to another screen
+        React.useEffect(() => {
+            const unsubscribe = navigation.addListener('blur', () => {
+              setErrMessage(null)
+            });
+        
+            return unsubscribe;
+          }, [navigation]);
+
 
     let [fontsLoaded] = useFonts({
         CircularStdBlack: require("../assets/Fonts/CircularStd-Black.ttf"),
@@ -60,9 +73,7 @@ const SigninScreen = ({navigation}) => {
                     buttonStyle={styles.button}
                     titleStyle={styles.buttonTitleStyle}
                     onPress={async ()=>{
-                        signup(username,email,password)
-                        console.log(state)
-
+                        signup(username,email,password).catch(e=>setErrMessage(e))
                     }}
                 />
                 <Divider style={styles.divider} />
@@ -71,64 +82,15 @@ const SigninScreen = ({navigation}) => {
                 <Text style={styles.subText}>Already have an account?  <Text style={{ color: '#7041EE' }}>sign in</Text></Text>
                 </TouchableOpacity>
 
+                {errMessage ? <Text style={styles.errMessage} >{errMessage}</Text> : null}
+
+
 
             </View>
         );
     }
 };
 
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#FAFBFD",
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    button: {
-        borderRadius: 24,
-        backgroundColor: "#7041EE",
-
-        width: 305,
-        height: 58,
-
-    },
-    text: {
-        fontFamily: "CircularStdBlack",
-        color: "#2C2929",
-        fontSize: 36,
-    },
-    subText: {
-        fontFamily: "CircularStdBlack",
-        color: "#2C2929",
-        fontSize: 15,
-    },
-    input: {
-        width: 305,
-        height: 58,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 24,
-    },
-    inputContainerStyle: {
-        borderBottomWidth: 0,
-        alignItems: "center",
-        alignContent: "center",
-        flex: 1,
-    },
-    inputStyle: {
-        color: "#2C2929",
-        fontFamily: "CircularStd",
-        fontSize: 20,
-    },
-    divider: {
-        height: 10,
-        backgroundColor: "transparent",
-    },
-    buttonTitleStyle: {
-        color: "#FFFFFF",
-        fontFamily: "CircularStd",
-        fontSize: 20,
-
-    },
-
-});
+// const styles = StyleSheet.create({
+// });
 export default SigninScreen;
