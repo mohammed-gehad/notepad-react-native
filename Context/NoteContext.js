@@ -17,14 +17,16 @@ export const Provider =({children})=>{
         }
     }
 
-    const getNotes =async()=>{
+    const getNotes =async(setIsLoading)=>{
         try{    
+            setIsLoading(true)
             const notes =await noteAPI.get('/user/notes')
             dispatch({type:'getNotes',payload:notes.data})
         }
         catch(e){
             console.log(e)
         }
+        setIsLoading(false)
 
     }
 

@@ -14,10 +14,12 @@ import { useFonts } from "@use-expo/font";
 import { Context as AuthContext } from "../Context/AuthContext";
 import styles from "../assets/style";
 import { Context as NoteContext } from "../Context/NoteContext";
-const _ =require('lodash')
+const _ = require("lodash");
+const moment = require("moment");
 
+const NoteListScreen = ({ navigation }) => {
+  const [isLoading,setIsLoading] = useState(false)
 
-const NoteListScreen = ({navigation}) => {
   let [fontsLoaded] = useFonts({
     CircularStdBlack: require("../assets/Fonts/CircularStd-Black.ttf"),
     CircularStdBold: require("../assets/Fonts/CircularStd-Bold.ttf"),
@@ -27,17 +29,14 @@ const NoteListScreen = ({navigation}) => {
 
   const { state, getNotes } = useContext(NoteContext);
 
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getNotes(setIsLoading)
 
+    });
 
-    React.useEffect(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-           getNotes();
-      });
-  
-      return unsubscribe;
-    }, [navigation]);
-  
- 
+    return unsubscribe;
+  }, [navigation]);
 
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#7041EE" />;
@@ -50,14 +49,20 @@ const NoteListScreen = ({navigation}) => {
 
             paddingTop: 40,
             paddingHorizontal: 10,
-            flex:1,
-            flexDirection:'column'
+            flex: 1,
+            flexDirection: "column",
           },
         ]}
       >
-        <Text style={[styles.text, {color:'#7041EE',paddingLeft:14}]}>notes</Text>
-        <View style={{flex:1}}>
+        <Text style={[styles.text, { color: "#7041EE", paddingLeft: 14 }]}>
+          notes
+        </Text>
+        <View style={{ flex: 1 }}>
           <FlatList
+          refreshing={isLoading}
+            onRefresh={()=>{
+              getNotes(setIsLoading)
+            }}
             style={{}}
             data={state}
             keyExtractor={(item) => item._id}
@@ -65,9 +70,12 @@ const NoteListScreen = ({navigation}) => {
               return (
                 <View>
                   <ListItem
+                  
                     chevron
-                    title={item.title}
-                    subtitle={item.content}
+                    rightTitle={moment(item.date).fromNow()}
+                    rightTitleStyle={{ fontSize: 12 }}
+                    title={_.truncate(item.title, { length: 24 })}
+                    subtitle={_.truncate(item.content, { length: 24 })}
                     containerStyle={{
                       height: 60,
                       backgroundColor: "transparent",
@@ -80,12 +88,12 @@ const NoteListScreen = ({navigation}) => {
                       fontSize: 18,
                     }}
                     subtitleStyle={{
-                        color: "#2C2929",
+                      color: "#2C2929",
                       fontFamily: "CircularStd",
                       fontSize: 14,
                     }}
-                    onPress={()=>{
-                        navigation.navigate('note',{id:item._id})
+                    onPress={() => {
+                      navigation.navigate("note", { id: item._id });
                     }}
                   />
 

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "HelloWorld",
+    "name": "notepad",
     "slug": "notepad",
     "platforms": [
       "ios",
@@ -23,6 +23,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "made with node js ,express js ,mongodb ,react native",
+    "githubUrl": "https://github.com/mohammed-gehad/notepad-react-native"
   }
 }
