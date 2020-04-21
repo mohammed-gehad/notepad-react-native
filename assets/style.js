@@ -41,8 +41,8 @@ export default styles = StyleSheet.create({
     },
     inputContainerStyle: {
         borderBottomWidth: 0,
-        alignItems: "center",
-        alignContent: "center",
+        // alignItems: "center",
+        // alignContent: "center",
         flex: 1,
     },
     inputStyle: {

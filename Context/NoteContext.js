@@ -9,6 +9,10 @@ export const Provider =({children})=>{
         switch(action.type){
             case 'getNotes' :
                 return action.payload
+            case 'addNote' :
+                return [...prevState,action.payload] 
+            case 'logout':
+                return []       
             default : return prevState
         }
     }
@@ -23,10 +27,40 @@ export const Provider =({children})=>{
         }
 
     }
+
+    const addNote = async(title,content)=>{
+        try{
+            const {data} =await noteAPI.post('/note/',{title,content})
+            if(data._id){
+                dispatch({type:'addNote',payload:data})
+
+                return new Promise.resolve(data)
+            }
+            else{
+                return new Promise.reject(data)
+            }
+
+
+        }
+        catch(e){
+            console.log(e)
+        }
+        
+    }
+
+    const logout = async() =>{
+        try{
+            dispatch({type:'logout'})
+
+        }
+        catch(e){
+
+        }
+    }
     
     const [state , dispatch]= useReducer(reducer,[])
     return(
-        <Context.Provider value={{state ,getNotes}}>
+        <Context.Provider value={{state ,getNotes, addNote ,logout}}>
             {children}
         </Context.Provider>
     )

@@ -27,12 +27,17 @@ const NoteListScreen = ({navigation}) => {
 
   const { state, getNotes } = useContext(NoteContext);
 
-  React.useEffect(() => {
-    console.log(state);
-  }, [state]);
-  React.useEffect(() => {
-    getNotes();
-  }, []);
+
+
+    React.useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+           getNotes();
+      });
+  
+      return unsubscribe;
+    }, [navigation]);
+  
+ 
 
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#7041EE" />;

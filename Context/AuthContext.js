@@ -1,18 +1,22 @@
-import React, { useReducer } from "react";
+import React, { useReducer ,useContext} from "react";
 import { AsyncStorage } from "react-native";
 import authAPI from "../api/noteApi";
 import { color } from "react-native-reanimated";
 const _ = require("lodash");
+import {Context as NoteContext } from './NoteContext'
 
 export const Context = React.createContext();
 
 export const Provider = ({ children }) => {
+  const noteContext = useContext(NoteContext)
   const reducer = (state, action) => {
     switch (action.type) {
       case "signin":
         return action.payload;
       case "getToken":
-          return {...state,token:action.payload}      
+          return {...state,token:action.payload}    
+      case "logout":
+        return { }     
       default:
         return state;
     }
@@ -95,8 +99,19 @@ export const Provider = ({ children }) => {
       return new Promise.resolve(false)
   }
 
+  const logout =async () =>{
+    try{
+      noteContext.logout()
+      AsyncStorage.removeItem('token')
+      dispatch({type:'logout'})
+    }
+    catch(e){
+      console.log(e)
+    }
+  }
+
   return (
-    <Context.Provider value={{ state, signin, signup, getUserInfo ,getToken}}>
+    <Context.Provider value={{ state, signin, signup, getUserInfo ,getToken , logout}}>
       {children}
     </Context.Provider>
   );
