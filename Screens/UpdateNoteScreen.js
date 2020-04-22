@@ -5,10 +5,12 @@ import styles from "../assets/style";
 const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
 
-const CreateNoteScreen = ({ navigation }) => {
-  const { state, addNote } = useContext(NoteContext);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+const UpdateNoteScreen = ({ navigation,route }) => {
+    const {id} = route.params
+    const { state, updateNote} = useContext(NoteContext);
+    const note = _.find(state,{'_id':id})
+  const [title, setTitle] = useState(note.title);
+  const [content, setContent] = useState(note.content);
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -33,12 +35,12 @@ const CreateNoteScreen = ({ navigation }) => {
             titleStyle={styles.buttonTitleStyle}
             onPress={() => {
               setIsLoading(true)
-              addNote(title, content).then((data) => {
+              updateNote(id,title, content).then((data) => {
                 setIsLoading(false)
                 setTitle("");
                 setContent("");
-                navigation.navigate("note", { id: data._id });
-              });
+               
+              }).then(()=> navigation.navigate("note", { id}))
             }}
           />
         ) : (
@@ -80,4 +82,4 @@ const CreateNoteScreen = ({ navigation }) => {
   );
 };
 
-export default CreateNoteScreen;
+export default UpdateNoteScreen;

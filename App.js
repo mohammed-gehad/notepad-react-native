@@ -19,6 +19,7 @@ import NoteListScreen from "./Screens/NoteListScreen";
 import CreateNoteScreen from "./Screens/CreateNoteScreen";
 import AccountScreen from "./Screens/AccountScreen";
 import NoteScreen from "./Screens/NoteScreen";
+import UpdateNoteScreen from "./Screens/UpdateNoteScreen";
 
 const stack = createStackNavigator();
 const tab = createBottomTabNavigator();
@@ -32,6 +33,7 @@ function NoteListStack() {
     >
       <stack.Screen name="noteList" component={NoteListScreen} />
       <stack.Screen name="note" component={NoteScreen} />
+      <stack.Screen name="updateNote" component={UpdateNoteScreen} />
     </stack.Navigator>
   );
 }

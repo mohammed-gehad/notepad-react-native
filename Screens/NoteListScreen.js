@@ -74,7 +74,7 @@ const NoteListScreen = ({ navigation }) => {
                     chevron
                     rightTitle={moment(item.date).fromNow()}
                     rightTitleStyle={{ fontSize: 12 }}
-                    title={_.truncate(item.title, { length: 24 })}
+                    title={_.truncate(item.title, { length: 20 })}
                     subtitle={_.truncate(item.content, { length: 24 })}
                     containerStyle={{
                       height: 60,
