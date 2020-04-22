@@ -7,8 +7,8 @@ import styles from '../assets/style'
 
 const SigninScreen = ({ navigation }) => {
     const {state , signin} = useContext(AuthContext)
-    const [email , setEmail] = useState('Pu2k@hotmail.com')
-    const [password , setPassword] = useState('Msamsamsa3')
+    const [email , setEmail] = useState('')
+    const [password , setPassword] = useState('')
     const [errMessage , setErrMessage] = useState(null)
 
     let [fontsLoaded] = useFonts({
@@ -42,6 +42,8 @@ const SigninScreen = ({ navigation }) => {
                     inputStyle={styles.inputStyle}
                     value={email}
                     onChangeText={setEmail}
+                    autoCapitalize='none'
+                    autoCorrect={false}
                 />
                 <Divider style={styles.divider} />
                 <Input
@@ -51,6 +53,9 @@ const SigninScreen = ({ navigation }) => {
                     inputStyle={styles.inputStyle}
                     value={password}
                     onChangeText={setPassword}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    secureTextEntry={true}
                 />
                 <Divider style={styles.divider} />
 
