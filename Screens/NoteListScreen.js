@@ -9,7 +9,7 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
-import { Button, Input, Divider, ListItem } from "react-native-elements";
+import { Button, Input, Divider, ListItem,Image } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
 import { Context as AuthContext } from "../Context/AuthContext";
 import styles from "../assets/style";
@@ -18,7 +18,7 @@ const _ = require("lodash");
 const moment = require("moment");
 
 const NoteListScreen = ({ navigation }) => {
-  const [isLoading,setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   let [fontsLoaded] = useFonts({
     CircularStdBlack: require("../assets/Fonts/CircularStd-Black.ttf"),
@@ -26,13 +26,13 @@ const NoteListScreen = ({ navigation }) => {
     CircularStdBook: require("../assets/Fonts/CircularStd-Book.ttf"),
     CircularStd: require("../assets/Fonts/CircularStd.ttf"),
   });
+  const image = require("../assets/Frame.png");
 
   const { state, getNotes } = useContext(NoteContext);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getNotes(setIsLoading)
-
+      getNotes(setIsLoading);
     });
 
     return unsubscribe;
@@ -54,14 +54,17 @@ const NoteListScreen = ({ navigation }) => {
           },
         ]}
       >
-        <Text style={[styles.text, { color: "#7041EE", paddingLeft: 14 }]}>
-          notes
-        </Text>
-        <View style={{ flex: 1 }}>
+        <View style={{flex:1,flexDirection:'row'}}>
+          <View style={{flex:1,justifyContent:'center'}}><Image source={image} style={{ width: 50, height: 50}} /></View>
+          <Text style={[styles.text, { color: "#7041EE", flex:6,textAlignVertical:'center' ,paddingBottom:8}]}>
+            notes
+          </Text>
+        </View>
+        <View style={{ flex: 10 }}>
           <FlatList
-          refreshing={isLoading}
-            onRefresh={()=>{
-              getNotes(setIsLoading)
+            refreshing={isLoading}
+            onRefresh={() => {
+              getNotes(setIsLoading);
             }}
             style={{}}
             data={state}
@@ -70,7 +73,6 @@ const NoteListScreen = ({ navigation }) => {
               return (
                 <View>
                   <ListItem
-                  
                     chevron
                     rightTitle={moment(item.date).fromNow()}
                     rightTitleStyle={{ fontSize: 12 }}

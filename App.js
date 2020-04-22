@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { AsyncStorage, ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
