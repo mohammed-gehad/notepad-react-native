@@ -7,9 +7,7 @@ import {
   Provider as AuthProvider,
   Context as AuthContext,
 } from "./Context/AuthContext";
-import {
-  Provider as NoteProvider,
-} from "./Context/NoteContext";
+import { Provider as NoteProvider } from "./Context/NoteContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 //screens
@@ -99,13 +97,12 @@ function App() {
 
                 // You can return any component that you like here!
                 return <Ionicons name={iconName} size={30} color={color} />;
-              }
+              },
             })}
-
             tabBarOptions={{
               activeTintColor: "#7041EE",
               inactiveTintColor: "gray",
-              showLabel:false
+              showLabel: false,
             }}
           >
             <tab.Screen name="noteStack" component={NoteListStack} />
@@ -121,9 +118,9 @@ function App() {
 export default () => {
   return (
     <NoteProvider>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </NoteProvider>
   );
 };

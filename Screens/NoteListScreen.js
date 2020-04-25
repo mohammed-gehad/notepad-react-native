@@ -9,13 +9,15 @@ import {
   FlatList,
   SafeAreaView,
 } from "react-native";
-import { Button, Input, Divider, ListItem,Image } from "react-native-elements";
+import { Button, Input, Divider, ListItem, Image } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
 import { Context as AuthContext } from "../Context/AuthContext";
 import styles from "../assets/style";
 import { Context as NoteContext } from "../Context/NoteContext";
 const _ = require("lodash");
 const moment = require("moment");
+import { SwipeListView } from "react-native-swipe-list-view";
+import { AntDesign, Feather } from "@expo/vector-icons";
 
 const NoteListScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +40,67 @@ const NoteListScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
+  const renderHiddenItem = () => {
+    return (
+      <View
+        style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}
+      >
+        <Feather
+          name="send"
+          size={27}
+          style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
+        />
+        <Feather
+          name="edit-2"
+          size={27}
+          style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
+        />
+        <AntDesign
+          name="delete"
+          size={27}
+          style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
+          onPress={() => {
+            console.log("delete");
+          }}
+        />
+      </View>
+    );
+  };
+  const renderItem = (data) => {
+    return (
+      <View>
+        <ListItem
+          chevron
+          rightTitle={moment(data.item.date).fromNow()}
+          rightTitleStyle={{ fontSize: 12 }}
+          title={_.truncate(data.item.title, { length: 20 })}
+          subtitle={_.truncate(data.item.content, { length: 24 })}
+          containerStyle={{
+            height: 60,
+            backgroundColor: "#FAFBFD",
+            borderLeftWidth: 3,
+            borderColor: "#6D3FE6",
+          }}
+          titleStyle={{
+            color: "#6D3FE6",
+            fontFamily: "CircularStd",
+            fontSize: 18,
+          }}
+          subtitleStyle={{
+            color: "#2C2929",
+            fontFamily: "CircularStd",
+            fontSize: 14,
+          }}
+          onPress={() => {
+            navigation.navigate("note", { id: data.item._id });
+          }}
+        />
+
+        <Divider style={styles.divider} />
+      </View>
+    );
+  };
+
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#7041EE" />;
   } else {
@@ -54,55 +117,34 @@ const NoteListScreen = ({ navigation }) => {
           },
         ]}
       >
-        <View style={{flex:1,flexDirection:'row'}}>
-          <View style={{flex:1,justifyContent:'center'}}><Image source={image} style={{ width: 50, height: 50}} /></View>
-          <Text style={[styles.text, { color: "#7041EE", flex:6,textAlignVertical:'center' ,paddingBottom:8}]}>
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Image source={image} style={{ width: 50, height: 50 }} />
+          </View>
+          <Text
+            style={[
+              styles.text,
+              {
+                color: "#7041EE",
+                flex: 6,
+                textAlignVertical: "center",
+                paddingBottom: 8,
+              },
+            ]}
+          >
             notes
           </Text>
         </View>
         <View style={{ flex: 10 }}>
-          <FlatList
-            refreshing={isLoading}
-            onRefresh={() => {
-              getNotes(setIsLoading);
-            }}
-            style={{}}
+          <SwipeListView
+            keyExtractor={(item, index) => index.toString()}
             data={state}
-            keyExtractor={(item) => item._id}
-            renderItem={({ item }) => {
-              return (
-                <View>
-                  <ListItem
-                    chevron
-                    rightTitle={moment(item.date).fromNow()}
-                    rightTitleStyle={{ fontSize: 12 }}
-                    title={_.truncate(item.title, { length: 20 })}
-                    subtitle={_.truncate(item.content, { length: 24 })}
-                    containerStyle={{
-                      height: 60,
-                      backgroundColor: "transparent",
-                      borderLeftWidth: 3,
-                      borderColor: "#6D3FE6",
-                    }}
-                    titleStyle={{
-                      color: "#6D3FE6",
-                      fontFamily: "CircularStd",
-                      fontSize: 18,
-                    }}
-                    subtitleStyle={{
-                      color: "#2C2929",
-                      fontFamily: "CircularStd",
-                      fontSize: 14,
-                    }}
-                    onPress={() => {
-                      navigation.navigate("note", { id: item._id });
-                    }}
-                  />
-
-                  <Divider style={styles.divider} />
-                </View>
-              );
-            }}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            rightOpenValue={-120}
+            previewRowKey={"0"}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
           />
         </View>
       </View>
