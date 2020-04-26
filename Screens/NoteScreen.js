@@ -5,7 +5,7 @@ import styles from "../assets/style";
 const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
 
-const Note = ({ route,navigation }) => {
+const Note = ({ route, navigation }) => {
   const { id } = route.params;
   const { state, getNotes } = useContext(NoteContext);
   const note = _.find(state, { _id: id });
@@ -25,19 +25,6 @@ const Note = ({ route,navigation }) => {
         >
           {note.title}
         </Text>
-        <Button
-          title="update"
-          type="solid"
-          buttonStyle={[
-            styles.button,
-            { position: "absolute", top: 0, right: 0, zIndex: 1, width: 100 },
-          ]}
-          titleStyle={styles.buttonTitleStyle}
-          onPress={() => {
-              navigation.navigate("updateNote", { id });
-
-          }}
-        />
       </View>
       <View
         style={{

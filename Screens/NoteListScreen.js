@@ -40,7 +40,7 @@ const NoteListScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  const renderHiddenItem = () => {
+  const renderHiddenItem = (data) => {
     return (
       <View
         style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}
@@ -52,6 +52,9 @@ const NoteListScreen = ({ navigation }) => {
         />
         <Feather
           name="edit-2"
+          onPress={() => {
+            navigation.navigate("updateNote", { id: data.item._id });
+          }}
           size={27}
           style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
         />
@@ -137,6 +140,11 @@ const NoteListScreen = ({ navigation }) => {
         </View>
         <View style={{ flex: 10 }}>
           <SwipeListView
+            onRefresh={() => {
+              setIsLoading(true);
+              getNotes().then(setIsLoading(false));
+            }}
+            refreshing={isLoading}
             keyExtractor={(item, index) => index.toString()}
             data={state}
             renderItem={renderItem}

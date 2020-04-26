@@ -1,17 +1,29 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Context as NoteContext } from "../Context/NoteContext";
 import styles from "../assets/style";
 const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
 
-const UpdateNoteScreen = ({ navigation,route }) => {
-    const {id} = route.params
-    const { state, updateNote} = useContext(NoteContext);
-    const note = _.find(state,{'_id':id})
+const UpdateNoteScreen = ({ navigation, route }) => {
+  const { id } = route.params;
+  const { state, updateNote } = useContext(NoteContext);
+  const note = _.find(state, { _id: id });
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", () => {
+      // do something
+      updateNote(id, title, content).then((data) => {
+        setTitle("");
+        setContent("");
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <View
@@ -34,17 +46,21 @@ const UpdateNoteScreen = ({ navigation,route }) => {
             ]}
             titleStyle={styles.buttonTitleStyle}
             onPress={() => {
-              setIsLoading(true)
-              updateNote(id,title, content).then((data) => {
-                setIsLoading(false)
-                setTitle("");
-                setContent("");
-               
-              }).then(()=> navigation.navigate("note", { id}))
+              setIsLoading(true);
+              updateNote(id, title, content)
+                .then((data) => {
+                  setIsLoading(false);
+                  setTitle("");
+                  setContent("");
+                })
+                .then(() => navigation.navigate("note", { id }));
             }}
           />
         ) : (
-          <ActivityIndicator size='large' style={{position:'absolute' ,right:50,top:50}}/>
+          <ActivityIndicator
+            size="large"
+            style={{ position: "absolute", right: 50, top: 50 }}
+          />
         )
       ) : null}
 

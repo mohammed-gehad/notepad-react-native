@@ -25,16 +25,13 @@ export const Provider = ({ children }) => {
     }
   };
 
-  const getNotes = async (setIsLoading) => {
+  const getNotes = async () => {
     try {
-      setIsLoading(true);
       const notes = await noteAPI.get("/user/notes");
-
       dispatch({ type: "getNotes", payload: notes.data });
     } catch (e) {
       console.log(e);
     }
-    setIsLoading(false);
   };
 
   const addNote = async (title, content) => {
