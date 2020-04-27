@@ -32,33 +32,6 @@ const UpdateNoteScreen = ({ navigation, route }) => {
         flexDirection: "column",
       }}
     >
-      {title && content ? (
-        !isLoading ? (
-          <Button
-            title="save"
-            type="solid"
-            buttonStyle={[
-              styles.button,
-              { position: "absolute", top: 0, right: 0, zIndex: 1, width: 100 },
-            ]}
-            titleStyle={styles.buttonTitleStyle}
-            onPress={() => {
-              setIsLoading(true);
-              updateNote(id, title, content)
-                .then((data) => {
-                  setIsLoading(false);
-                })
-                .then(() => navigation.navigate("noteList"));
-            }}
-          />
-        ) : (
-          <ActivityIndicator
-            size="large"
-            style={{ position: "absolute", right: 50, top: 50 }}
-          />
-        )
-      ) : null}
-
       <Input
         placeholder="Title"
         containerStyle={styles.input}

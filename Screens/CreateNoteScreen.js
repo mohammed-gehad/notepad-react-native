@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import { Context as NoteContext } from "../Context/NoteContext";
 import styles from "../assets/style";
@@ -11,6 +11,20 @@ const CreateNoteScreen = ({ navigation }) => {
   const [content, setContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", () => {
+      // do something
+      if (title && content) {
+        addNote(title, content).then((data) => {
+          setTitle("");
+          setContent("");
+        });
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, title, content]);
+
   return (
     <View
       style={{
@@ -21,34 +35,6 @@ const CreateNoteScreen = ({ navigation }) => {
         flexDirection: "column",
       }}
     >
-      {title && content ? (
-        !isLoading ? (
-          <Button
-            title="save"
-            type="solid"
-            buttonStyle={[
-              styles.button,
-              { position: "absolute", top: 0, right: 0, zIndex: 1, width: 100 },
-            ]}
-            titleStyle={styles.buttonTitleStyle}
-            onPress={() => {
-              setIsLoading(true);
-              addNote(title, content).then((data) => {
-                setIsLoading(false);
-                setTitle("");
-                setContent("");
-                navigation.navigate("note", { id: data._id });
-              });
-            }}
-          />
-        ) : (
-          <ActivityIndicator
-            size="large"
-            style={{ position: "absolute", right: 50, top: 50 }}
-          />
-        )
-      ) : null}
-
       <Input
         placeholder="Title"
         containerStyle={styles.input}
