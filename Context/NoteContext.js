@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { View, Text } from "react-native";
+import { View, Text, AsyncStorage } from "react-native";
 import noteAPI from "../api/noteApi";
 const _ = require("lodash");
 
@@ -18,6 +18,12 @@ export const Provider = ({ children }) => {
         prevState[index].content = action.payload.content;
         return prevState;
       }
+      case "deleteNote": {
+        const newState = prevState.filter(
+          (item) => item._id !== action.payload
+        );
+        return newState;
+      }
       case "logout":
         return [];
       default:
@@ -25,43 +31,60 @@ export const Provider = ({ children }) => {
     }
   };
 
-  const getNotes = async () => {
+  const [state, dispatch] = useReducer(reducer, []);
+
+  const getNotes = new Promise(async (resolve, reject) => {
     try {
       const notes = await noteAPI.get("/user/notes");
       dispatch({ type: "getNotes", payload: notes.data });
+      return resolve();
     } catch (e) {
       console.log(e);
+      return reject();
     }
-  };
+  });
 
-  const addNote = async (title, content) => {
-    try {
-      const { data } = await noteAPI.post("/note/", { title, content });
-      if (data._id) {
-        dispatch({ type: "addNote", payload: data });
-
-        return new Promise.resolve(data);
-      } else {
-        return new Promise.reject(data);
+  const addNote = (title, content) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await noteAPI.post("/note/", { title, content });
+        if (data._id) {
+          dispatch({ type: "addNote", payload: data });
+          return resolve(data);
+        } else {
+          return reject(data);
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    });
 
-  const updateNote = async (_id, title, content) => {
-    try {
-      const { data } = await noteAPI.put("/note/", { _id, title, content });
-      if (data._id) {
-        dispatch({ type: "updateNote", payload: data });
-        return new Promise.resolve(data);
-      } else {
-        return new Promise.reject(data);
+  const updateNote = (_id, title, content) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await noteAPI.put("/note/", { _id, title, content });
+        if (data._id) {
+          dispatch({ type: "updateNote", payload: data });
+          resolve();
+        } else {
+          reject();
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    });
+
+  const deleteNote = ({ _id }) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        await noteAPI.delete(`/note/${_id}`).then(() => {
+          dispatch({ type: "deleteNote", payload: _id });
+          resolve();
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    });
 
   const logout = async () => {
     try {
@@ -69,9 +92,17 @@ export const Provider = ({ children }) => {
     } catch (e) {}
   };
 
-  const [state, dispatch] = useReducer(reducer, []);
   return (
-    <Context.Provider value={{ state, getNotes, addNote, logout, updateNote }}>
+    <Context.Provider
+      value={{
+        state,
+        getNotes,
+        addNote,
+        logout,
+        updateNote,
+        deleteNote,
+      }}
+    >
       {children}
     </Context.Provider>
   );

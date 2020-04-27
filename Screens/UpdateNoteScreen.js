@@ -14,16 +14,13 @@ const UpdateNoteScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("blur", () => {
+    const unsubscribe = navigation.addListener("transitionStart", () => {
       // do something
-      updateNote(id, title, content).then((data) => {
-        setTitle("");
-        setContent("");
-      });
+      updateNote(id, title, content);
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, title, content]);
 
   return (
     <View
@@ -50,10 +47,8 @@ const UpdateNoteScreen = ({ navigation, route }) => {
               updateNote(id, title, content)
                 .then((data) => {
                   setIsLoading(false);
-                  setTitle("");
-                  setContent("");
                 })
-                .then(() => navigation.navigate("note", { id }));
+                .then(() => navigation.navigate("noteList"));
             }}
           />
         ) : (

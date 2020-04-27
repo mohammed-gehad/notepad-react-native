@@ -32,9 +32,9 @@ const CreateNoteScreen = ({ navigation }) => {
             ]}
             titleStyle={styles.buttonTitleStyle}
             onPress={() => {
-              setIsLoading(true)
+              setIsLoading(true);
               addNote(title, content).then((data) => {
-                setIsLoading(false)
+                setIsLoading(false);
                 setTitle("");
                 setContent("");
                 navigation.navigate("note", { id: data._id });
@@ -42,7 +42,10 @@ const CreateNoteScreen = ({ navigation }) => {
             }}
           />
         ) : (
-          <ActivityIndicator size='large' style={{position:'absolute' ,right:50,top:50}}/>
+          <ActivityIndicator
+            size="large"
+            style={{ position: "absolute", right: 50, top: 50 }}
+          />
         )
       ) : null}
 
@@ -67,9 +70,8 @@ const CreateNoteScreen = ({ navigation }) => {
         <View style={{ flex: 1 }}>
           <Input
             placeholder="content"
-            containerStyle={[{}]}
             inputContainerStyle={[{ borderBottomWidth: 0 }]}
-            inputStyle={[styles.inputStyle, {}]}
+            inputStyle={[styles.inputStyle]}
             value={content}
             onChangeText={setContent}
             multiline

@@ -8,6 +8,7 @@ import {
   AsyncStorage,
   FlatList,
   SafeAreaView,
+  Share,
 } from "react-native";
 import { Button, Input, Divider, ListItem, Image } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
@@ -30,17 +31,41 @@ const NoteListScreen = ({ navigation }) => {
   });
   const image = require("../assets/Frame.png");
 
-  const { state, getNotes } = useContext(NoteContext);
+  const { state, getNotes, deleteNote, saveData, getData } = useContext(
+    NoteContext
+  );
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getNotes(setIsLoading);
+      setIsLoading(true);
+      getNotes.then(() => {
+        setIsLoading(false);
+      });
     });
 
     return unsubscribe;
   }, [navigation]);
 
   const renderHiddenItem = (data) => {
+    onShare = async () => {
+      try {
+        const result = await Share.share({
+          message: `${data.item.title}\n${data.item.content}`,
+        });
+
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    };
     return (
       <View
         style={{ flex: 1, justifyContent: "flex-end", flexDirection: "row" }}
@@ -49,6 +74,7 @@ const NoteListScreen = ({ navigation }) => {
           name="send"
           size={27}
           style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
+          onPress={onShare}
         />
         <Feather
           name="edit-2"
@@ -59,12 +85,13 @@ const NoteListScreen = ({ navigation }) => {
           style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
         />
         <AntDesign
+          onPress={() => {
+            //console.log(data.item._id);
+            deleteNote({ _id: data.item._id });
+          }}
           name="delete"
           size={27}
           style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
-          onPress={() => {
-            console.log("delete");
-          }}
         />
       </View>
     );
@@ -142,7 +169,9 @@ const NoteListScreen = ({ navigation }) => {
           <SwipeListView
             onRefresh={() => {
               setIsLoading(true);
-              getNotes().then(setIsLoading(false));
+              getNotes.then(() => {
+                setIsLoading(false);
+              });
             }}
             refreshing={isLoading}
             keyExtractor={(item, index) => index.toString()}
