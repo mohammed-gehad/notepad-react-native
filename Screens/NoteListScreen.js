@@ -19,6 +19,7 @@ const _ = require("lodash");
 const moment = require("moment");
 import { SwipeListView } from "react-native-swipe-list-view";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import { color } from "react-native-reanimated";
 
 const NoteListScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,14 +32,12 @@ const NoteListScreen = ({ navigation }) => {
   });
   const image = require("../assets/Frame.png");
 
-  const { state, getNotes, deleteNote, saveData, getData } = useContext(
-    NoteContext
-  );
+  const { state, getNotes, deleteNote } = useContext(NoteContext);
 
   React.useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
+    const unsubscribe = navigation.addListener("focus", function () {
       setIsLoading(true);
-      getNotes.then(() => {
+      getNotes().then(() => {
         setIsLoading(false);
       });
     });
@@ -86,7 +85,6 @@ const NoteListScreen = ({ navigation }) => {
         />
         <AntDesign
           onPress={() => {
-            //console.log(data.item._id);
             deleteNote({ _id: data.item._id });
           }}
           name="delete"
@@ -97,6 +95,9 @@ const NoteListScreen = ({ navigation }) => {
     );
   };
   const renderItem = (data) => {
+    const navigate = () => {
+      navigation.navigate("note", { id: data.item._id });
+    };
     return (
       <View>
         <ListItem
@@ -109,10 +110,10 @@ const NoteListScreen = ({ navigation }) => {
             height: 60,
             backgroundColor: "#FAFBFD",
             borderLeftWidth: 3,
-            borderColor: "#6D3FE6",
+            borderColor: data.item.color || "#7041EE",
           }}
           titleStyle={{
-            color: "#6D3FE6",
+            color: data.item.color || "#7041EE",
             fontFamily: "CircularStd",
             fontSize: 18,
           }}
@@ -121,9 +122,7 @@ const NoteListScreen = ({ navigation }) => {
             fontFamily: "CircularStd",
             fontSize: 14,
           }}
-          onPress={() => {
-            navigation.navigate("note", { id: data.item._id });
-          }}
+          onPress={navigate}
         />
 
         <Divider style={styles.divider} />
@@ -169,7 +168,7 @@ const NoteListScreen = ({ navigation }) => {
           <SwipeListView
             onRefresh={() => {
               setIsLoading(true);
-              getNotes.then(() => {
+              getNotes().then(() => {
                 setIsLoading(false);
               });
             }}

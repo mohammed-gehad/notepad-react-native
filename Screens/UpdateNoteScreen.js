@@ -4,6 +4,7 @@ import { Context as NoteContext } from "../Context/NoteContext";
 import styles from "../assets/style";
 const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
+import SelectColor from "../components/SelectColor";
 
 const UpdateNoteScreen = ({ navigation, route }) => {
   const { id } = route.params;
@@ -12,11 +13,14 @@ const UpdateNoteScreen = ({ navigation, route }) => {
   const [title, setTitle] = useState(note.title);
   const [content, setContent] = useState(note.content);
   const [isLoading, setIsLoading] = useState(false);
+  const [color, setColor] = useState(note.color || "#7041EE");
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("transitionStart", () => {
       // do something
-      updateNote(id, title, content);
+      if ((title || content, color)) {
+        updateNote(id, title, content);
+      }
     });
 
     return unsubscribe;
@@ -32,11 +36,15 @@ const UpdateNoteScreen = ({ navigation, route }) => {
         flexDirection: "column",
       }}
     >
+      <View style={{ alignItems: "center" }}>
+        <SelectColor setColor={setColor} />
+      </View>
+      <Divider style={styles.divider} />
       <Input
         placeholder="Title"
-        containerStyle={styles.input}
+        containerStyle={[styles.input, { width: null }]}
         inputContainerStyle={styles.inputContainerStyle}
-        inputStyle={[styles.inputStyle, { color: "#7041EE" }]}
+        inputStyle={[styles.inputStyle, { color: color }]}
         value={title}
         onChangeText={setTitle}
       />

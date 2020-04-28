@@ -4,18 +4,18 @@ import { Context as NoteContext } from "../Context/NoteContext";
 import styles from "../assets/style";
 const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
+import SelectColor from "../components/SelectColor";
 
 const CreateNoteScreen = ({ navigation }) => {
   const { state, addNote } = useContext(NoteContext);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [color, setColor] = useState("#7041EE");
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("blur", () => {
-      // do something
-      if (title && content) {
-        addNote(title, content).then((data) => {
+      if (title || content) {
+        addNote(title, content, color).then((data) => {
           setTitle("");
           setContent("");
         });
@@ -35,11 +35,15 @@ const CreateNoteScreen = ({ navigation }) => {
         flexDirection: "column",
       }}
     >
+      <View style={{ alignItems: "center" }}>
+        <SelectColor setColor={setColor} />
+      </View>
+      <Divider style={styles.divider} />
       <Input
         placeholder="Title"
-        containerStyle={styles.input}
+        containerStyle={[styles.input, { width: null }]}
         inputContainerStyle={styles.inputContainerStyle}
-        inputStyle={[styles.inputStyle, { color: "#7041EE" }]}
+        inputStyle={[styles.inputStyle, { color }]}
         value={title}
         onChangeText={setTitle}
       />

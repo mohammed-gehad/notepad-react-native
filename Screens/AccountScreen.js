@@ -6,8 +6,7 @@ const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
 
 const AccountScreen = ({ navigation }) => {
-  const { state ,logout} = useContext(AuthContext);
-  console.log()
+  const { state, logout } = useContext(AuthContext);
 
   return (
     <View
@@ -19,21 +18,19 @@ const AccountScreen = ({ navigation }) => {
         flexDirection: "column",
       }}
     >
-
-    <Text style={styles.text}>Hi!{'\n'}{state.username}</Text>
-    <Divider style={styles.divider} />
+      <Text style={styles.text}>
+        Hi!{"\n"}
+        {state.username}
+      </Text>
+      <Divider style={styles.divider} />
 
       <Button
         title="logout"
         type="solid"
-        buttonStyle={[
-          styles.button,
-            {alignSelf:'center'}
-        ]}
+        buttonStyle={[styles.button, { alignSelf: "center" }]}
         titleStyle={styles.buttonTitleStyle}
         onPress={logout}
       />
-     
     </View>
   );
 };

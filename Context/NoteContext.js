@@ -11,7 +11,7 @@ export const Provider = ({ children }) => {
       case "getNotes":
         return action.payload;
       case "addNote":
-        return [...prevState, action.payload];
+        return [action.payload, ...prevState];
       case "updateNote": {
         const index = _.findIndex(prevState, { _id: action.payload._id });
         prevState[index].title = action.payload.title;
@@ -33,21 +33,25 @@ export const Provider = ({ children }) => {
 
   const [state, dispatch] = useReducer(reducer, []);
 
-  const getNotes = new Promise(async (resolve, reject) => {
-    try {
-      const notes = await noteAPI.get("/user/notes");
-      dispatch({ type: "getNotes", payload: notes.data });
-      return resolve();
-    } catch (e) {
-      console.log(e);
-      return reject();
-    }
-  });
-
-  const addNote = (title, content) =>
+  const getNotes = () =>
     new Promise(async (resolve, reject) => {
       try {
-        const { data } = await noteAPI.post("/note/", { title, content });
+        const notes = await noteAPI.get("/user/notes");
+        dispatch({ type: "getNotes", payload: notes.data });
+        return resolve();
+      } catch (e) {
+        console.log(e);
+        return reject();
+      }
+    });
+  const addNote = (title, content, color) =>
+    new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await noteAPI.post("/note/", {
+          title,
+          content,
+          color,
+        });
         if (data._id) {
           dispatch({ type: "addNote", payload: data });
           return resolve(data);
@@ -59,10 +63,15 @@ export const Provider = ({ children }) => {
       }
     });
 
-  const updateNote = (_id, title, content) =>
+  const updateNote = (_id, title, content, color) =>
     new Promise(async (resolve, reject) => {
       try {
-        const { data } = await noteAPI.put("/note/", { _id, title, content });
+        const { data } = await noteAPI.put("/note/", {
+          _id,
+          title,
+          content,
+          color,
+        });
         if (data._id) {
           dispatch({ type: "updateNote", payload: data });
           resolve();
@@ -96,11 +105,11 @@ export const Provider = ({ children }) => {
     <Context.Provider
       value={{
         state,
-        getNotes,
         addNote,
         logout,
         updateNote,
         deleteNote,
+        getNotes,
       }}
     >
       {children}

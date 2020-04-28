@@ -1,10 +1,5 @@
 import React, { useState, useContext } from "react";
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Button, Input, Divider, Image } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
 import { Context as AuthContext } from "../Context/AuthContext";
@@ -53,6 +48,8 @@ const SigninScreen = ({ navigation }) => {
             inputStyle={styles.inputStyle}
             value={username}
             onChangeText={setUsername}
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <Divider style={styles.divider} />
 
@@ -63,6 +60,8 @@ const SigninScreen = ({ navigation }) => {
             inputStyle={styles.inputStyle}
             value={email}
             onChangeText={setEmail}
+            autoCapitalize="none"
+            autoCorrect={false}
           />
           <Divider style={styles.divider} />
           <Input
@@ -72,6 +71,9 @@ const SigninScreen = ({ navigation }) => {
             inputStyle={styles.inputStyle}
             value={password}
             onChangeText={setPassword}
+            autoCapitalize="none"
+            autoCorrect={false}
+            secureTextEntry={true}
           />
           <Divider style={styles.divider} />
 
