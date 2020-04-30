@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
 import { View, Text } from "react-native";
 import { Context as AuthContext } from "../Context/AuthContext";
+import { Context as NoteContext } from "../Context/NoteContext";
 import styles from "../assets/style";
 const _ = require("lodash");
 import { Button, Input, Divider, Card } from "react-native-elements";
 
 const AccountScreen = ({ navigation }) => {
   const { state, logout } = useContext(AuthContext);
+  const { _saveLocal, _getLocal } = useContext(NoteContext);
 
   return (
     <View

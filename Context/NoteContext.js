@@ -36,13 +36,38 @@ export const Provider = ({ children }) => {
   const getNotes = () =>
     new Promise(async (resolve, reject) => {
       try {
-        const notes = await noteAPI.get("/user/notes");
-        dispatch({ type: "getNotes", payload: notes.data });
+        await noteAPI
+          .get("/user/notes")
+          .then(
+            ({ data }) =>
+              new Promise((resolve, reject) => {
+                dispatch({ type: "getNotes", payload: data });
+                resolve(data);
+              })
+          )
+          .then((data) => {
+            _saveLocal(data);
+          });
         return resolve();
       } catch (e) {
         console.log(e);
         return reject();
       }
+    });
+
+  const _saveLocal = (data) =>
+    new Promise(async (resolve, reject) => {
+      if (data)
+        await AsyncStorage.setItem("state", JSON.stringify(data)).then(resolve);
+      else reject();
+    });
+
+  const _getLocal = () =>
+    new Promise(async (resolve, reject) => {
+      await AsyncStorage.getItem("state").then((data) => {
+        dispatch({ type: "getNotes", payload: JSON.parse(data) });
+        resolve();
+      });
     });
   const addNote = (title, content, color) =>
     new Promise(async (resolve, reject) => {
@@ -98,6 +123,7 @@ export const Provider = ({ children }) => {
   const logout = async () => {
     try {
       dispatch({ type: "logout" });
+      await AsyncStorage.clear();
     } catch (e) {}
   };
 
@@ -110,6 +136,7 @@ export const Provider = ({ children }) => {
         updateNote,
         deleteNote,
         getNotes,
+        _getLocal,
       }}
     >
       {children}

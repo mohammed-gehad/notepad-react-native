@@ -32,12 +32,12 @@ const NoteListScreen = ({ navigation }) => {
   });
   const image = require("../assets/Frame.png");
 
-  const { state, getNotes, deleteNote } = useContext(NoteContext);
+  const { state, getNotes, deleteNote, _getLocal } = useContext(NoteContext);
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener("focus", function () {
       setIsLoading(true);
-      getNotes().then(() => {
+      _getLocal().then(() => {
         setIsLoading(false);
       });
     });
