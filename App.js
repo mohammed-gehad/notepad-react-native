@@ -12,11 +12,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 //screens
 import SigninScreen from "./Screens/SigninScreen";
-import SignupScreen from "./Screens/SignupScreen";
 import NoteListScreen from "./Screens/NoteListScreen";
 import CreateNoteScreen from "./Screens/CreateNoteScreen";
 import AccountScreen from "./Screens/AccountScreen";
-import NoteScreen from "./Screens/NoteScreen";
 import UpdateNoteScreen from "./Screens/UpdateNoteScreen";
 
 const stack = createStackNavigator();
@@ -30,7 +28,6 @@ function NoteListStack() {
       }}
     >
       <stack.Screen name="noteList" component={NoteListScreen} />
-      <stack.Screen name="note" component={NoteScreen} />
       <stack.Screen name="updateNote" component={UpdateNoteScreen} />
     </stack.Navigator>
   );
@@ -77,7 +74,6 @@ function App() {
             }}
           >
             <stack.Screen name="signin" component={SigninScreen} />
-            <stack.Screen name="signup" component={SignupScreen} />
           </stack.Navigator>
         </>
       ) : (
@@ -88,15 +84,22 @@ function App() {
                 let iconName;
 
                 if (route.name === "noteStack") {
-                  iconName = "ios-list";
+                  return <Ionicons name={"ios-list"} size={30} color={color} />;
                 } else if (route.name === "createNote") {
-                  iconName = "ios-add";
+                  return (
+                    <Ionicons
+                      name={"md-add-circle-outline"}
+                      size={40}
+                      color={color}
+                    />
+                  );
                 } else if (route.name === "account") {
-                  iconName = "ios-options";
+                  return (
+                    <Ionicons name={"ios-options"} size={30} color={color} />
+                  );
                 }
 
                 // You can return any component that you like here!
-                return <Ionicons name={iconName} size={30} color={color} />;
               },
             })}
             tabBarOptions={{

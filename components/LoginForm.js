@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import { Button, Input, Divider, Image } from "react-native-elements";
 import styles from "../assets/style";
 
-const LoginForm = ({
+export const LoginForm = ({
   placeholder,
   value,
   onChangeText,
@@ -64,5 +64,3 @@ const LoginForm = ({
     </View>
   );
 };
-
-export default LoginForm;

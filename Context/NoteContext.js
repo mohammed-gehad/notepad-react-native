@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { View, Text, AsyncStorage } from "react-native";
+import { AsyncStorage } from "react-native";
 import noteAPI from "../api/noteApi";
 const _ = require("lodash");
 
@@ -65,7 +65,9 @@ export const Provider = ({ children }) => {
   const _getLocal = () =>
     new Promise(async (resolve, reject) => {
       await AsyncStorage.getItem("state").then((data) => {
-        dispatch({ type: "getNotes", payload: JSON.parse(data) });
+        data = JSON.parse(data);
+        if (data) dispatch({ type: "getNotes", payload: data });
+        else getNotes();
         resolve();
       });
     });

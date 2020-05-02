@@ -3,8 +3,8 @@ import { View, Text, ActivityIndicator } from "react-native";
 import { Context as NoteContext } from "../Context/NoteContext";
 import styles from "../assets/style";
 const _ = require("lodash");
-import { Button, Input, Divider, Card } from "react-native-elements";
-import SelectColor from "../components/SelectColor";
+import { Input, Divider } from "react-native-elements";
+import { SelectColor, Header } from "../components";
 
 const CreateNoteScreen = ({ navigation }) => {
   const { state, addNote } = useContext(NoteContext);
@@ -26,49 +26,57 @@ const CreateNoteScreen = ({ navigation }) => {
   }, [navigation, title, content]);
 
   return (
-    <View
-      style={{
-        backgroundColor: "#FAFBFD",
-        paddingTop: 40,
-        paddingHorizontal: 10,
-        flex: 1,
-        flexDirection: "column",
-      }}
-    >
-      <View style={{ alignItems: "center" }}>
-        <SelectColor setColor={setColor} />
-      </View>
-      <Divider style={styles.divider} />
-      <Input
-        placeholder="Title"
-        containerStyle={[styles.input, { width: null }]}
-        inputContainerStyle={styles.inputContainerStyle}
-        inputStyle={[styles.inputStyle, { color }]}
-        value={title}
-        onChangeText={setTitle}
+    <>
+      <Header
+        backgroundColor="#FAFBFD"
+        onPress={() => {
+          navigation.navigate("noteList");
+        }}
       />
-      <Divider style={styles.divider} />
 
       <View
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: "#FAFBFD",
+          paddingHorizontal: 10,
           flex: 1,
-          borderRadius: 18,
-          padding: 10,
+          flexDirection: "column",
         }}
       >
-        <View style={{ flex: 1 }}>
-          <Input
-            placeholder="content"
-            inputContainerStyle={[{ borderBottomWidth: 0 }]}
-            inputStyle={[styles.inputStyle]}
-            value={content}
-            onChangeText={setContent}
-            multiline
-          />
+        <View style={{ alignItems: "center" }}>
+          <SelectColor setColor={setColor} />
+        </View>
+        <Divider style={styles.divider} />
+        <Input
+          placeholder="Title"
+          containerStyle={[styles.input, { width: null }]}
+          inputContainerStyle={styles.inputContainerStyle}
+          inputStyle={[styles.inputStyle, { color }]}
+          value={title}
+          onChangeText={setTitle}
+        />
+        <Divider style={styles.divider} />
+
+        <View
+          style={{
+            backgroundColor: "#fff",
+            flex: 1,
+            borderRadius: 18,
+            padding: 10,
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Input
+              placeholder="content"
+              inputContainerStyle={[{ borderBottomWidth: 0 }]}
+              inputStyle={[styles.inputStyle]}
+              value={content}
+              onChangeText={setContent}
+              multiline
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 };
 

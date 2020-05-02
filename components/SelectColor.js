@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import RadioButtonRN from "radio-buttons-react-native";
 
-const SelectColor = ({ setColor }) => {
+export const SelectColor = ({ setColor }) => {
   const size = 25;
   const [activeIndex, setActiveIndex] = useState(null);
   const data = [
@@ -48,5 +48,3 @@ const SelectColor = ({ setColor }) => {
     </View>
   );
 };
-
-export default SelectColor;

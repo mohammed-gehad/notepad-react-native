@@ -1,7 +1,6 @@
 import React, { useReducer, useContext } from "react";
 import { AsyncStorage } from "react-native";
 import authAPI from "../api/noteApi";
-import { color } from "react-native-reanimated";
 const _ = require("lodash");
 import { Context as NoteContext } from "./NoteContext";
 

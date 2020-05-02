@@ -1,25 +1,13 @@
 import React, { useState, useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-  AsyncStorage,
-  FlatList,
-  SafeAreaView,
-  Share,
-} from "react-native";
-import { Button, Input, Divider, ListItem, Image } from "react-native-elements";
+import { View, Text, ActivityIndicator, Share } from "react-native";
+import { Divider, ListItem, Image } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
-import { Context as AuthContext } from "../Context/AuthContext";
 import styles from "../assets/style";
 import { Context as NoteContext } from "../Context/NoteContext";
 const _ = require("lodash");
 const moment = require("moment");
 import { SwipeListView } from "react-native-swipe-list-view";
 import { AntDesign, Feather } from "@expo/vector-icons";
-import { color } from "react-native-reanimated";
 
 const NoteListScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,19 +36,9 @@ const NoteListScreen = ({ navigation }) => {
   const renderHiddenItem = (data) => {
     onShare = async () => {
       try {
-        const result = await Share.share({
+        await Share.share({
           message: `${data.item.title}\n${data.item.content}`,
         });
-
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            // shared with activity type of result.activityType
-          } else {
-            // shared
-          }
-        } else if (result.action === Share.dismissedAction) {
-          // dismissed
-        }
       } catch (error) {
         alert(error.message);
       }
@@ -75,14 +53,6 @@ const NoteListScreen = ({ navigation }) => {
           style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
           onPress={onShare}
         />
-        <Feather
-          name="edit-2"
-          onPress={() => {
-            navigation.navigate("updateNote", { id: data.item._id });
-          }}
-          size={27}
-          style={{ alignSelf: "center", paddingBottom: 10, margin: 5 }}
-        />
         <AntDesign
           onPress={() => {
             deleteNote({ _id: data.item._id });
@@ -95,9 +65,6 @@ const NoteListScreen = ({ navigation }) => {
     );
   };
   const renderItem = (data) => {
-    const navigate = () => {
-      navigation.navigate("note", { id: data.item._id });
-    };
     return (
       <View>
         <ListItem
@@ -122,7 +89,9 @@ const NoteListScreen = ({ navigation }) => {
             fontFamily: "CircularStd",
             fontSize: 14,
           }}
-          onPress={navigate}
+          onPress={() =>
+            navigation.navigate("updateNote", { id: data.item._id })
+          }
         />
 
         <Divider style={styles.divider} />

@@ -1,11 +1,19 @@
 import React, { useState, useContext } from "react";
-import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  TouchableOpacity,
+  LayoutAnimation,
+  UIManager,
+} from "react-native";
 import { Button, Input, Divider, Image } from "react-native-elements";
 import { useFonts } from "@use-expo/font";
 import { Context as AuthContext } from "../Context/AuthContext";
 import styles from "../assets/style";
-import LoginForm from "../components/LoginForm";
+import { LoginForm } from "../components";
 const validator = require("validator");
+const _ = require("lodash");
 
 const SigninScreen = ({ navigation }) => {
   const { signin, signup } = useContext(AuthContext);
@@ -27,6 +35,11 @@ const SigninScreen = ({ navigation }) => {
   const image = require("../assets/Frame.png");
   //event clears error message when navigate to another screen
   React.useEffect(() => {
+    if (Platform.OS === "android") {
+      if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+      }
+    }
     const unsubscribe = navigation.addListener("blur", () => {
       setErrMessage(null);
     });
@@ -50,7 +63,7 @@ const SigninScreen = ({ navigation }) => {
       case "login":
         return (
           <LoginForm
-            text="Hi User!"
+            text={`Hi ${username}!`}
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
@@ -95,13 +108,17 @@ const SigninScreen = ({ navigation }) => {
   const _login = (email, password) => {
     setErrMessage(null);
     setLoginFlow(null);
+    email = _.trim(email);
 
     if (validator.isEmail(email)) {
       signin(email, password).catch((e) => {
+        console.log(e);
         //setLoginFlow [enter_email,login,create_account]
-        if (e == "invalid password") {
+        if (e.message == "invalid password") {
+          if (loginFlow == "login") setErrMessage("invalid password");
           setLoginFlow("login");
-        } else if (e == "invalid email") {
+          setUsername(e.username);
+        } else if (e.message == "invalid email") {
           setLoginFlow("create_account");
         }
       });
@@ -136,7 +153,12 @@ const SigninScreen = ({ navigation }) => {
 
           <Divider style={styles.divider} />
           {loginFlow == "create_account" || loginFlow == "login" ? (
-            <TouchableOpacity onPress={() => setLoginFlow("enter_email")}>
+            <TouchableOpacity
+              onPress={() => {
+                setLoginFlow("enter_email");
+                setErrMessage(null);
+              }}
+            >
               <Text style={[styles.subText, { color: "#7041EE" }]}>
                 use a different email
               </Text>
